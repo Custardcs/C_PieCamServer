@@ -1,0 +1,51 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Live MP4 Stream
+    style.
+      body {
+        background-color: black;
+        color: white;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      video {
+        max-width: 100%;
+        max-height: 100%;
+      }
+  body
+    video#video(controls autoplay muted)
+
+    script.
+      const video = document.getElementById('video');
+      const ws = new WebSocket('ws://' + window.location.host + '/stream');
+
+      const mediaSource = new MediaSource();
+      video.src = URL.createObjectURL(mediaSource);
+
+      mediaSource.addEventListener('sourceopen', () => {
+          const sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E"');
+
+          ws.onmessage = (event) => {
+              if (sourceBuffer.updating || event.data.size === 0) return;
+              sourceBuffer.appendBuffer(new Uint8Array(event.data));
+          };
+      });
+
+      ws.onopen = () => {
+          console.log('Connected to the streaming server');
+      };
+
+      ws.onclose = () => {
+          console.log('Disconnected from the streaming server');
+      };
+
+      ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+      };

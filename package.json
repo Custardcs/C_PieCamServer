@@ -1,0 +1,17 @@
+{
+  "name": "c_piecamserver",
+  "version": "1.0.0",
+  "description": "Server that manges the clients",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "pug": "^3.0.3",
+    "ws": "^8.18.0"
+  }
+}
